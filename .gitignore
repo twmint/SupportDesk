@@ -1,0 +1,15 @@
+*.md
+*.pdf
+
+# .NET build output
+bin/
+obj/
+
+# IDE
+.vs/
+.vscode/
+
+# Angular
+node_modules/
+dist/
+.angular/
