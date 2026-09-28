@@ -1,6 +1,36 @@
-@SupportDesk.Api_HostAddress = http://localhost:5105
+@HostAddress = http://localhost:5105
 
-GET {{SupportDesk.Api_HostAddress}}/weatherforecast/
+### Create agent — first one, should succeed (201)
+POST {{HostAddress}}/api/agents
+Content-Type: application/json
+
+{
+  "fullName": "Test Agent",
+  "email": "dupe@test.com",
+  "department": 0
+}
+
+###
+
+### Create agent — same email again, should trigger the 409 middleware path
+POST {{HostAddress}}/api/agents
+Content-Type: application/json
+
+{
+  "fullName": "Test Agent Two",
+  "email": "dupe@test.com",
+  "department": 0
+}
+
+###
+
+### List agents — confirm only ONE got created (second POST didn't slip through)
+GET {{HostAddress}}/api/agents
 Accept: application/json
+
+###
+
+### Deactivate agent with an InProgress ticket — expect 400 { error }
+DELETE {{HostAddress}}/api/agents/1
 
 ###

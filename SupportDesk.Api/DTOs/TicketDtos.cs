@@ -34,6 +34,8 @@ public class TicketDto
     public DateTime? ClosedAt { get; set; }
 
     public DateTime DueDate { get; set; }
+
+    public bool IsOverdue { get; set; }
 }
 
 public class TicketCreateDto

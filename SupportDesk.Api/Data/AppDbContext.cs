@@ -18,6 +18,12 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Ticket>()
             .HasIndex(t => t.Reference)
             .IsUnique();
+
+        modelBuilder.Entity<Ticket>()
+            .HasOne(t => t.Agent)
+            .WithMany(a => a.Tickets)
+            .HasForeignKey(t => t.AgentId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
     public DbSet<Agent> Agents { get; set; } = null!;

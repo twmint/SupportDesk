@@ -81,7 +81,7 @@ public class AgentService : IAgentService
         if (inProgressCount > 0)
         {
             return (DeactivationStatus.HasActiveTickets,
-                $"Cannot deactivate: {inProgressCount} ticket(s) still In Progress. Reassign them to another agent first.");
+                $"Cannot deactivate: {inProgressCount} ticket(s) still in progress. Reassign them to another agent first.");
         }
 
         foreach (var ticket in assignedTickets)
@@ -107,12 +107,6 @@ public class AgentService : IAgentService
     {
         var agent = await _context.Agents.FindAsync(id);
         if (agent == null) return false;
-
-        var assignedTickets = await _context.Tickets.Where(t => t.AgentId == id).ToListAsync();
-        foreach (var ticket in assignedTickets)
-        {
-            ticket.AgentId = null;
-        }
 
         _context.Agents.Remove(agent);
         await _context.SaveChangesAsync();

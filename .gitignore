@@ -1,4 +1,5 @@
 *.md
+#!README.md
 *.pdf
 
 # .NET build output
@@ -8,8 +9,3 @@ obj/
 # IDE
 .vs/
 .vscode/
-
-# Angular
-node_modules/
-dist/
-.angular/
