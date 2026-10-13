@@ -2,7 +2,10 @@
 
 A simple support ticketing tool: log customer issues, assign them to agents, and track them through to resolution with due dates and overdue tracking.
 
-<img src="docs/ticket-list.png" width="800" alt="Ticket list">
+<p align="center">
+  <img src="docs/desktop.png" alt="Desktop view" width="600" />
+  <img src="docs/mobile.png" alt="Mobile view" width="200" />
+</p>
 
 ## Tech stack
 
