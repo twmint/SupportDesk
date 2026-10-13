@@ -1,1 +1,170 @@
-<p>ticket-detail works!</p>
+<section class="ticket-detail">
+  <a routerLink="/tickets" class="back">← Back to tickets</a>
+
+  @if (loading()) {
+    <p class="state">Loading ticket...</p>
+  } @else if (loadError()) {
+    <div class="alert alert-error" role="alert">{{ loadError() }}</div>
+  } @else if (ticket(); as t) {
+    <header class="page-header">
+      <div>
+        <p class="reference">{{ t.reference }}</p>
+        <h1>{{ t.title }}</h1>
+        <div class="badges">
+          <span class="badge status-{{ t.status }}">{{ STATUS_LABELS[t.status] }}</span>
+          <span class="badge priority priority-{{ t.priority }}">{{ TicketPriority[t.priority] }} priority</span>
+          @if (t.isOverdue) {
+            <span class="badge badge-overdue">Overdue</span>
+          }
+        </div>
+      </div>
+
+      <div class="header-actions">
+        @if (!isClosed()) {
+          <a [routerLink]="['/tickets', t.id, 'edit']" class="btn btn-secondary">Edit</a>
+        }
+        <button
+          type="button"
+          class="btn btn-danger"
+          [disabled]="isClosed() || busy()"
+          (click)="showDeleteConfirm.set(true)"
+        >
+          Delete
+        </button>
+      </div>
+    </header>
+
+    @if (isClosed()) {
+      <div class="alert" role="status">This ticket is closed and read-only.</div>
+    }
+
+    @if (actionError()) {
+      <div class="alert alert-error" role="alert">{{ actionError() }}</div>
+    }
+
+    <div class="layout">
+      <div class="main">
+        <section class="card">
+          <h2>Description</h2>
+          <p class="description">{{ t.description }}</p>
+        </section>
+
+        <section class="card">
+          <h2>Comments ({{ t.comments.length }})</h2>
+
+          @for (c of t.comments; track c.id) {
+            <article class="comment">
+              <header>
+                <strong>{{ c.authorName }}</strong>
+                <time>{{ c.createdAt | date: 'dd MMM yyyy, HH:mm' }}</time>
+              </header>
+              <p>{{ c.body }}</p>
+            </article>
+          } @empty {
+            <p class="muted">No comments yet.</p>
+          }
+
+          @if (!isClosed()) {
+            <form [formGroup]="commentForm" (ngSubmit)="addComment()" class="comment-form" novalidate>
+              <div class="field">
+                <label for="authorName">Your name</label>
+                <input id="authorName" formControlName="authorName" type="text" />
+                @if (commentForm.controls.authorName.touched && commentForm.controls.authorName.hasError('required')) {
+                  <small class="error">Name is required.</small>
+                }
+                @if (commentForm.controls.authorName.touched && commentForm.controls.authorName.hasError('maxlength')) {
+                  <small class="error">Name cannot exceed 200 characters.</small>
+                }
+              </div>
+
+              <div class="field">
+                <label for="body">Comment</label>
+                <textarea id="body" formControlName="body" rows="3"></textarea>
+                @if (commentForm.controls.body.touched && commentForm.controls.body.hasError('required')) {
+                  <small class="error">Comment is required.</small>
+                }
+                @if (commentForm.controls.body.touched && commentForm.controls.body.hasError('maxlength')) {
+                  <small class="error">Comment cannot exceed 1000 characters.</small>
+                }
+              </div>
+
+              <button type="submit" class="btn btn-primary" [disabled]="busy()">Add comment</button>
+            </form>
+          }
+        </section>
+      </div>
+
+      <aside class="sidebar">
+        <section class="card">
+          <h2>Status</h2>
+          <p><span class="badge status-{{ t.status }}">{{ STATUS_LABELS[t.status] }}</span></p>
+          @if (nextStatuses().length > 0) {
+            <div class="status-actions">
+              @for (s of nextStatuses(); track s) {
+                <button type="button" class="btn btn-secondary" [disabled]="busy()" (click)="changeStatus(s)">
+                  Move to {{ STATUS_LABELS[s] }}
+                </button>
+              }
+            </div>
+          } @else {
+            <p class="muted">No further status changes.</p>
+          }
+        </section>
+
+        <section class="card">
+          <h2>Assigned agent</h2>
+          <p [class.muted]="!assignedAgent()">{{ assignedAgent()?.fullName ?? 'Unassigned' }}</p>
+          @if (!isClosed()) {
+            <div class="assign">
+              <select [formControl]="agentControl" aria-label="Assign agent">
+                <option [ngValue]="null">Unassigned</option>
+                @for (a of activeAgents(); track a.id) {
+                  <option [ngValue]="a.id">{{ a.fullName }}</option>
+                }
+              </select>
+              <button type="button" class="btn btn-secondary" [disabled]="busy()" (click)="assignAgent()">
+                Assign
+              </button>
+            </div>
+          }
+        </section>
+
+        <section class="card">
+          <h2>Details</h2>
+          <dl>
+            <dt>Customer</dt>
+            <dd>{{ t.customerName }}</dd>
+            <dt>Email</dt>
+            <dd><a href="mailto:{{ t.customerEmail }}">{{ t.customerEmail }}</a></dd>
+            <dt>Created</dt>
+            <dd>{{ t.createdAt | date: 'dd MMM yyyy, HH:mm' }}</dd>
+            <dt>Due</dt>
+            <dd [class.overdue]="t.isOverdue">{{ t.dueDate | date: 'dd MMM yyyy, HH:mm' }}</dd>
+            @if (t.lastModifiedAt) {
+              <dt>Last modified</dt>
+              <dd>{{ t.lastModifiedAt | date: 'dd MMM yyyy, HH:mm' }}</dd>
+            }
+            @if (t.resolvedAt) {
+              <dt>Resolved</dt>
+              <dd>{{ t.resolvedAt | date: 'dd MMM yyyy, HH:mm' }}</dd>
+            }
+            @if (t.closedAt) {
+              <dt>Closed</dt>
+              <dd>{{ t.closedAt | date: 'dd MMM yyyy, HH:mm' }}</dd>
+            }
+          </dl>
+        </section>
+      </aside>
+    </div>
+
+    <app-confirm-dialog
+      [open]="showDeleteConfirm()"
+      title="Delete ticket?"
+      [message]="'Ticket ' + t.reference + ' and its comments will be permanently deleted.'"
+      confirmLabel="Delete"
+      [busy]="busy()"
+      (confirmed)="deleteTicket()"
+      (cancelled)="showDeleteConfirm.set(false)"
+    />
+  }
+</section>

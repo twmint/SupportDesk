@@ -151,7 +151,7 @@ public class TicketService : ITicketService
         if (dto.Priority is not null && dto.Priority.Value != ticket.Priority)
         {
             ticket.Priority = dto.Priority.Value;
-            // Rule 1: recalculated from the ORIGINAL creation date, not now.
+            // BR-1
             ticket.DueDate = TicketRulesService.CalculateDueDate(ticket.Priority, ticket.CreatedAt);
         }
 
@@ -183,7 +183,7 @@ public class TicketService : ITicketService
             return (ChangeTicketStatusResult.InvalidTransition, reason);
         }
 
-        // Rule 3: cannot move to In Progress unless an active agent is assigned.
+        // BR-3
         if (newStatus == TicketStatus.InProgress)
         {
             var agent = ticket.AgentId is not null
@@ -200,7 +200,7 @@ public class TicketService : ITicketService
         ticket.Status = newStatus;
         ticket.LastModifiedAt = DateTime.UtcNow;
 
-        // Rule 6: resolved/closed dates set by the system on transition.
+        // BR-6
         if (newStatus == TicketStatus.Resolved)
         {
             ticket.ResolvedAt = DateTime.UtcNow;
@@ -211,7 +211,6 @@ public class TicketService : ITicketService
         }
         else if (newStatus == TicketStatus.InProgress && previousStatus == TicketStatus.Resolved)
         {
-            // Reopened: clear the stale resolution timestamp so a later re-resolve is accurate.
             ticket.ResolvedAt = null;
         }
 
@@ -232,7 +231,7 @@ public class TicketService : ITicketService
         {
             var agent = await _context.Agents.FindAsync(agentId.Value);
             if (agent == null) return (AssignAgentToTicketResult.AgentNotFound, null);
-            // Rule 4: an inactive agent cannot be assigned to any ticket.
+            // BR-4
             if (!agent.Active)
             {
                 return (AssignAgentToTicketResult.AgentInactive, "Cannot assign an inactive agent.");
@@ -269,16 +268,17 @@ public class TicketService : ITicketService
         var year = DateTime.UtcNow.Year;
         var prefix = $"REF-{year}-";
 
-        var existingRefs = await _context.Tickets
+        var lastReference = await _context.Tickets
             .Where(t => t.Reference.StartsWith(prefix))
+            .OrderByDescending(t => t.Reference.Length)
+            .ThenByDescending(t => t.Reference)
             .Select(t => t.Reference)
-            .ToListAsync();
+            .FirstOrDefaultAsync();
 
-        var maxSequence = existingRefs
-            .Select(r => int.TryParse(r.AsSpan(prefix.Length), out var n) ? n : 0)
-            .DefaultIfEmpty(0)
-            .Max();
+        var lastSequence = lastReference is not null && int.TryParse(lastReference.AsSpan(prefix.Length), out var n)
+            ? n
+            : 0;
 
-        return $"{prefix}{maxSequence + 1:D4}";
+        return $"{prefix}{lastSequence + 1:D4}";
     }
 }

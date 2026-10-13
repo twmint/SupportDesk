@@ -64,7 +64,7 @@ namespace SupportDesk.Api.Controllers
             return result switch
             {
                 UpdateTicketResult.NotFound => NotFound(),
-                UpdateTicketResult.TicketClosed => BadRequest(new { error = "Closed tickets are read-only." }),
+                UpdateTicketResult.TicketClosed => Problem(detail: "Closed tickets are read-only.", statusCode: 400, title: "Ticket is closed"),
                 _ => NoContent()
             };
         }
@@ -87,8 +87,8 @@ namespace SupportDesk.Api.Controllers
             return result switch
             {
                 ChangeTicketStatusResult.NotFound => NotFound(),
-                ChangeTicketStatusResult.InvalidTransition => BadRequest(new { error = reason }),
-                ChangeTicketStatusResult.AgentRequired => BadRequest(new { error = reason }),
+                ChangeTicketStatusResult.InvalidTransition => Problem(detail: reason, statusCode: 400, title: "Invalid status transition"),
+                ChangeTicketStatusResult.AgentRequired => Problem(detail: reason, statusCode: 400, title: "Agent required"),
                 _ => NoContent()
             };
         }
@@ -100,9 +100,9 @@ namespace SupportDesk.Api.Controllers
             return result switch
             {
                 AssignAgentToTicketResult.TicketNotFound => NotFound(),
-                AssignAgentToTicketResult.AgentNotFound => BadRequest(new { error = "Agent not found." }),
-                AssignAgentToTicketResult.AgentInactive => BadRequest(new { error = reason }),
-                AssignAgentToTicketResult.TicketClosed => BadRequest(new { error = reason }),
+                AssignAgentToTicketResult.AgentNotFound => Problem(detail: "Agent not found.", statusCode: 400, title: "Agent not found"),
+                AssignAgentToTicketResult.AgentInactive => Problem(detail: reason, statusCode: 400, title: "Agent inactive"),
+                AssignAgentToTicketResult.TicketClosed => Problem(detail: reason, statusCode: 400, title: "Ticket is closed"),
                 _ => NoContent()
             };
         }
@@ -114,7 +114,7 @@ namespace SupportDesk.Api.Controllers
             return result switch
             {
                 AddCommentResult.TicketNotFound => NotFound(),
-                AddCommentResult.TicketClosed => BadRequest(new { error = "Closed tickets are read-only, cannot add comments." }),
+                AddCommentResult.TicketClosed => Problem(detail: "Closed tickets are read-only, cannot add comments.", statusCode: 400, title: "Ticket is closed"),
                 _ => CreatedAtAction(nameof(GetTicket), new { id }, comment!.ToDto())
             };
         }

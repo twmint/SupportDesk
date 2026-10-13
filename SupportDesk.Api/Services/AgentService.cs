@@ -95,7 +95,6 @@ public class AgentService : IAgentService
                 ticket.Status = TicketStatus.Closed;
                 ticket.ClosedAt = DateTime.UtcNow;
             }
-            // Closed: already terminal, no action needed.
         }
 
         agent.Active = false;

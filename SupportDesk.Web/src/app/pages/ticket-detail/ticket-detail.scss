@@ -1,0 +1,158 @@
+.back {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.page-header h1 {
+  margin: 0.25rem 0 0.75rem;
+}
+
+.reference {
+  margin: 0;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.badges,
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badges {
+  gap: 0.75rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20rem;
+  align-items: start;
+  gap: 1.25rem;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.main,
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.card h2 {
+  margin-bottom: 0.875rem;
+}
+
+.description {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.comment {
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--border);
+
+  &:first-of-type {
+    padding-top: 0;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  time {
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+
+  p {
+    margin: 0;
+    white-space: pre-wrap;
+  }
+}
+
+.comment-form {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background: var(--surface-muted);
+  border-radius: var(--radius);
+
+  .btn {
+    margin-top: 0.25rem;
+  }
+}
+
+.status-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .btn {
+    width: 100%;
+  }
+}
+
+.assign {
+  display: flex;
+  gap: 0.5rem;
+
+  select {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1rem;
+  margin: 0;
+  font-size: 0.875rem;
+
+  dt {
+    color: var(--text-muted);
+  }
+
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+.overdue {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .page-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .header-actions .btn {
+    flex: 1;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+}

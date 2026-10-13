@@ -14,6 +14,13 @@ export enum TicketStatus {
   Closed = 3,
 }
 
+export const TICKET_STATUS_LABELS: Record<TicketStatus, string> = {
+  [TicketStatus.New]: 'New',
+  [TicketStatus.InProgress]: 'In Progress',
+  [TicketStatus.Resolved]: 'Resolved',
+  [TicketStatus.Closed]: 'Closed',
+};
+
 export interface Ticket {
   id: number;
   reference: string;

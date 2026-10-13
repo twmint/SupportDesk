@@ -1,0 +1,31 @@
+:host {
+  display: block;
+  max-width: 46rem;
+  margin-inline: auto;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+}
+
+form.card {
+  padding: 1.5rem;
+}
+
+.actions {
+  margin-top: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}

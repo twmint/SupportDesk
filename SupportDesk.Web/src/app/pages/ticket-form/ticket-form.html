@@ -1,1 +1,102 @@
-<p>ticket-form works!</p>
+<section class="ticket-form">
+  <a [routerLink]="isEdit() ? ['/tickets', id()] : ['/tickets']" class="back">← Back</a>
+
+  <header class="page-header">
+    <div>
+      <h1>{{ isEdit() ? 'Edit ticket' : 'New ticket' }}</h1>
+      <p class="muted subtitle">
+        {{ isEdit() ? 'Update the ticket details.' : 'Due date is set automatically from the priority.' }}
+      </p>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <p class="state">Loading ticket...</p>
+  } @else {
+    @if (isClosed()) {
+      <div class="alert" role="status">This ticket is closed and can't be edited.</div>
+    }
+
+    @if (serverError().length > 0) {
+      <div class="alert alert-error" role="alert">
+        <strong>Could not save ticket.</strong>
+        <ul>
+          @for (error of serverError(); track error) {
+            <li>{{ error }}</li>
+          }
+        </ul>
+      </div>
+    }
+
+    <form class="card" [formGroup]="ticketForm" (ngSubmit)="save()" novalidate>
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" formControlName="title" type="text" />
+        @if (ticketForm.controls.title.touched && ticketForm.controls.title.hasError('required')) {
+          <small class="error">Title is required.</small>
+        }
+        @if (ticketForm.controls.title.touched && ticketForm.controls.title.hasError('maxlength')) {
+          <small class="error">Title cannot exceed 200 characters.</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" rows="5"></textarea>
+        @if (ticketForm.controls.description.touched && ticketForm.controls.description.hasError('required')) {
+          <small class="error">Description is required.</small>
+        }
+        @if (ticketForm.controls.description.touched && ticketForm.controls.description.hasError('maxlength')) {
+          <small class="error">Description cannot exceed 1000 characters.</small>
+        }
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="customerName">Customer name</label>
+          <input id="customerName" formControlName="customerName" type="text" />
+          @if (ticketForm.controls.customerName.touched && ticketForm.controls.customerName.hasError('required')) {
+            <small class="error">Customer name is required.</small>
+          }
+          @if (ticketForm.controls.customerName.touched && ticketForm.controls.customerName.hasError('maxlength')) {
+            <small class="error">Customer name cannot exceed 200 characters.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="customerEmail">Customer email</label>
+          <input id="customerEmail" formControlName="customerEmail" type="email" />
+          @if (ticketForm.controls.customerEmail.touched && ticketForm.controls.customerEmail.hasError('required')) {
+            <small class="error">Customer email is required.</small>
+          }
+          @if (ticketForm.controls.customerEmail.touched && ticketForm.controls.customerEmail.hasError('email')) {
+            <small class="error">Enter a valid email address.</small>
+          }
+          @if (ticketForm.controls.customerEmail.touched && ticketForm.controls.customerEmail.hasError('maxlength')) {
+            <small class="error">Customer email cannot exceed 100 characters.</small>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="priority">Priority</label>
+        <select id="priority" formControlName="priority">
+          @for (p of priorityOptions; track p) {
+            <option [ngValue]="p">{{ TicketPriority[p] }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="actions">
+        <a [routerLink]="isEdit() ? ['/tickets', id()] : ['/tickets']" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary" [disabled]="saving() || isClosed()">
+          @if (saving()) {
+            Saving...
+          } @else {
+            Save
+          }
+        </button>
+      </div>
+    </form>
+  }
+</section>

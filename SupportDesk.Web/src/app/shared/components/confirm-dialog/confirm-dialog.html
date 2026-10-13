@@ -1,1 +1,24 @@
-<p>confirm-dialog works!</p>
+@if (open()) {
+  <div class="backdrop" (click)="busy() || cancelled.emit()">
+    <div
+      class="dialog"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="confirm-title"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 id="confirm-title">{{ title() }}</h2>
+      @if (message()) {
+        <p>{{ message() }}</p>
+      }
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" [disabled]="busy()" (click)="cancelled.emit()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger" [disabled]="busy()" (click)="confirmed.emit()">
+          {{ busy() ? 'Working...' : confirmLabel() }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

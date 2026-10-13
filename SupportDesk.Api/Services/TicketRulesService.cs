@@ -4,6 +4,7 @@ namespace SupportDesk.Api.Services;
 
 public static class TicketRulesService
 {
+    // BR-1
     public static DateTime CalculateDueDate(TicketPriority priority, DateTime createdAt)
     {
         switch (priority)
@@ -21,6 +22,7 @@ public static class TicketRulesService
         }
     }
 
+    // BR-2
     public static bool IsValidTransition(TicketStatus from, TicketStatus to, out string? reason)
     {
         reason = from switch

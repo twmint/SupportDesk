@@ -1,5 +1,6 @@
 *.md
 !/README.md
+!/SupportDesk.Web/README.md
 *.pdf
 
 # .NET build output

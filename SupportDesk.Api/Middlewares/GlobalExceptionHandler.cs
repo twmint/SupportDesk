@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Diagnostics;   // IExceptionHandler
-using Microsoft.AspNetCore.Mvc;           // ProblemDetails
-using Microsoft.EntityFrameworkCore;      // DbUpdateException
-using Microsoft.Data.SqlClient;           // SqlException
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 
 namespace SupportDesk.Api.Middleware;
 

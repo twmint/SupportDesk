@@ -57,5 +57,6 @@ public class Ticket
 
     public DateTime DueDate { get; set; }
 
+    // BR-7
     public bool IsOverdue => Status != TicketStatus.Resolved && Status != TicketStatus.Closed && DueDate < DateTime.UtcNow;
 }

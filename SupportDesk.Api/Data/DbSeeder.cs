@@ -82,7 +82,7 @@ public static class DbSeeder
             NewTicket("Slow page load on dashboard", "Mei Lin", "mei.lin@example.com", TicketPriority.High, TicketStatus.New, ageInDays: 0),
             NewTicket("Typo in welcome email", "Noah Bennett", "noah.bennett@example.com", TicketPriority.Low, TicketStatus.New, ageInDays: 2),
 
-            // In Progress — must have an active agent assigned (business rule 3)
+            // In Progress — active agent assigned (BR-3)
             NewTicket("Password reset email not arriving", "Sara Ahmed", "sara.ahmed@example.com", TicketPriority.High, TicketStatus.InProgress, ageInDays: 0, agent: alice),
             NewTicket("Billing address update request", "Tom Walsh", "tom.walsh@example.com", TicketPriority.Normal, TicketStatus.InProgress, ageInDays: 1, agent: bob),
             NewTicket("API returns 500 on export", "Grace Kim", "grace.kim@example.com", TicketPriority.Critical, TicketStatus.InProgress, ageInDays: 0, agent: dave),
@@ -93,12 +93,12 @@ public static class DbSeeder
             NewTicket("Duplicate charge on card", "Marcus Reid", "marcus.reid@example.com", TicketPriority.High, TicketStatus.Resolved, ageInDays: 2, agent: bob),
             NewTicket("Report export missing columns", "Yuki Tanaka", "yuki.tanaka@example.com", TicketPriority.Normal, TicketStatus.Resolved, ageInDays: 3, agent: dave),
 
-            // Closed — fully read-only, has an agent
+            // Closed — read-only (BR-5)
             NewTicket("Account deletion request", "Fatima Zahra", "fatima.zahra@example.com", TicketPriority.Normal, TicketStatus.Closed, ageInDays: 10, agent: carol),
             NewTicket("Upgrade plan question", "Henry Osei", "henry.osei@example.com", TicketPriority.Low, TicketStatus.Closed, ageInDays: 15, agent: bob),
             NewTicket("SSO integration inquiry", "Isabel Cruz", "isabel.cruz@example.com", TicketPriority.High, TicketStatus.Closed, ageInDays: 8, agent: alice),
 
-            // Overdue — DueDate already passed, status still open (rule 7)
+            // Overdue — due date passed, still open (BR-7)
             NewTicket("Data export stuck at 0%", "Ravi Shankar", "ravi.shankar@example.com", TicketPriority.Critical, TicketStatus.New, ageInDays: 1),
             NewTicket("Mobile app crashes on launch", "Anna Kowalski", "anna.kowalski@example.com", TicketPriority.High, TicketStatus.InProgress, ageInDays: 5, agent: dave),
             NewTicket("Contract renewal terms unclear", "Lucas Ferreira", "lucas.ferreira@example.com", TicketPriority.Normal, TicketStatus.New, ageInDays: 6),

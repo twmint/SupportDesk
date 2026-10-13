@@ -1,1 +1,112 @@
-<p>ticket-list works!</p>
+<section class="ticket-list">
+  <header class="page-header">
+    <div>
+      <h1>Tickets</h1>
+      <p class="muted subtitle">{{ totalCount() }} {{ totalCount() === 1 ? 'ticket' : 'tickets' }}</p>
+    </div>
+    <a routerLink="/tickets/new" class="btn btn-primary">+ New ticket</a>
+  </header>
+
+  <form class="filters card" [formGroup]="filters">
+    <input
+      class="search"
+      type="search"
+      formControlName="search"
+      placeholder="Search reference, title or customer"
+      aria-label="Search tickets"
+    />
+
+    <select formControlName="status" aria-label="Filter by status">
+      <option [ngValue]="null">All statuses</option>
+      @for (s of statusOptions; track s) {
+        <option [ngValue]="s">{{ STATUS_LABELS[s] }}</option>
+      }
+    </select>
+
+    <select formControlName="priority" aria-label="Filter by priority">
+      <option [ngValue]="null">All priorities</option>
+      @for (p of priorityOptions; track p) {
+        <option [ngValue]="p">{{ TicketPriority[p] }}</option>
+      }
+    </select>
+
+    <select class="agent-filter" formControlName="agentId" aria-label="Filter by agent">
+      <option [ngValue]="null">All agents</option>
+      @for (a of agents(); track a.id) {
+        <option [ngValue]="a.id">{{ a.fullName }}</option>
+      }
+    </select>
+
+    <label class="checkbox">
+      <input type="checkbox" formControlName="overdueOnly" />
+      Overdue only
+    </label>
+
+    <button type="button" class="btn btn-ghost btn-sm" (click)="clearFilters()" [disabled]="filters.pristine">
+      Clear
+    </button>
+  </form>
+
+  @if (error()) {
+    <div class="alert alert-error" role="alert">{{ error() }}</div>
+  }
+
+  <div class="card table-card">
+    @if (loading()) {
+      <p class="state">Loading tickets...</p>
+    } @else if (tickets().length === 0) {
+      <p class="state">No tickets match your filters.</p>
+    } @else {
+      <div class="table-scroll">
+        <table class="tickets">
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Title</th>
+              <th>Customer</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Agent</th>
+              <th>Due</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of tickets(); track t.id) {
+              <tr [class.overdue]="t.isOverdue">
+                <td><a class="reference" [routerLink]="['/tickets', t.id]">{{ t.reference }}</a></td>
+                <td class="title">{{ t.title }}</td>
+                <td data-label="Customer">{{ t.customerName }}</td>
+                <td data-label="Priority"><span class="badge priority priority-{{ t.priority }}">{{ TicketPriority[t.priority] }}</span></td>
+                <td data-label="Status"><span class="badge status-{{ t.status }}">{{ STATUS_LABELS[t.status] }}</span></td>
+                <td data-label="Agent" [class.muted]="!t.agentId">{{ t.agentId ? agentNames().get(t.agentId) : 'Unassigned' }}</td>
+                <td data-label="Due" class="due">
+                  {{ t.dueDate | date: 'dd MMM, HH:mm' }}
+                  @if (t.isOverdue) {
+                    <span class="badge badge-overdue">Overdue</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <nav class="pagination" aria-label="Pagination">
+        <span class="muted">Page {{ page() }} of {{ totalPages() }}</span>
+        <div class="pagination-buttons">
+          <button type="button" class="btn btn-secondary btn-sm" (click)="goToPage(page() - 1)" [disabled]="page() === 1">
+            Previous
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
+            (click)="goToPage(page() + 1)"
+            [disabled]="page() === totalPages()"
+          >
+            Next
+          </button>
+        </div>
+      </nav>
+    }
+  </div>
+</section>

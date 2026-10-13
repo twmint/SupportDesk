@@ -60,7 +60,7 @@ namespace SupportDesk.Api.Controllers
             return status switch
             {
                 DeactivationStatus.NotFound => NotFound(),
-                DeactivationStatus.HasActiveTickets => BadRequest(new { error = reason }),
+                DeactivationStatus.HasActiveTickets => Problem(detail: reason, statusCode: 400, title: "Agent has active tickets"),
                 _ => NoContent()
             };
         }
