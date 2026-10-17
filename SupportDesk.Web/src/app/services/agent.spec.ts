@@ -1,12 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-import { Agent } from './agent';
+import { AgentService } from './agent';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
-describe('Agent', () => {
-  let service: Agent;
+describe('AgentService', () => {
+  let service: AgentService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(Agent);
+    TestBed.configureTestingModule({
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
+    });
+    service = TestBed.inject(AgentService);
   });
 
   it('should be created', () => {

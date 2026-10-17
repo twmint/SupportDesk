@@ -3,8 +3,8 @@
 A simple support ticketing tool: log customer issues, assign them to agents, and track them through to resolution with due dates and overdue tracking.
 
 <p align="center">
-  <img src="docs/desktop.png" alt="Desktop view" width="600" />
-  <img src="docs/mobile.png" alt="Mobile view" width="200" />
+  <img src="docs/desktop.png" alt="Desktop view" height="440" />
+  <img src="docs/mobile.png" alt="Mobile view" height="440" />
 </p>
 
 ## Tech stack
@@ -128,9 +128,19 @@ Errors use the standard [ProblemDetails](https://datatracker.ietf.org/doc/html/r
 - **Deleting** a closed ticket is disabled in the UI.
 - `PUT /agents/{id}` can reactivate an agent but not deactivate one; deactivation always goes through the workflow above.
 
+## Testing
+
+```bash
+dotnet test                          # backend, from the repository root
+cd SupportDesk.Web && npm test       # frontend
+```
+
+The backend tests cover BR-1 and BR-2.
+
 ## Known limitations and roadmap
 
-- Automated tests: unit tests for `TicketRulesService` (due dates, status transitions) and component tests for the ticket form and list.
+- BR-3 to BR-6 are not tested yet: they depend on stored data, so they need an in-memory database in the test setup.
+- The ticket list and detail pages have no component tests yet.
 - Ticket reference generation is not safe under concurrent creates. The unique index on `Reference` rejects a duplicate (returned as 409) rather than creating one, but a database sequence or a retry on conflict would remove the failure.
 - List filters are not reflected in the URL, so refreshing or sharing the page loses them.
 - Configuration such as the frontend API URL is hard-coded; Angular environment files would allow per-environment builds.
